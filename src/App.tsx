@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 // 環境變數
 const GAS_URL = import.meta.env.VITE_GOOGLE_APP_SCRIPT_URL || '';
