@@ -1,0 +1,215 @@
+:root {
+  --primary-bg: #1a1a24;
+  --panel-bg: #2a2a35;
+  --text-main: #e0e0e0;
+  --text-accent: #ffcc00;
+  --btn-bg: #4caf50;
+  --btn-hover: #45a049;
+  --btn-disabled: #555;
+  --danger: #f44336;
+  --border-color: #555;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'DotGothic16', sans-serif;
+  background-color: var(--primary-bg);
+  color: var(--text-main);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  /* Retro CRT scanline effect background */
+  background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+}
+
+#root {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.pixel-panel {
+  background-color: var(--panel-bg);
+  border: 4px solid var(--border-color);
+  padding: 20px;
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.5);
+  margin-bottom: 20px;
+}
+
+.pixel-btn {
+  font-family: 'DotGothic16', sans-serif;
+  background-color: var(--btn-bg);
+  color: #fff;
+  border: 4px solid #fff;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.5);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-transform: uppercase;
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.pixel-btn:hover:not(:disabled) {
+  background-color: var(--btn-hover);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.5);
+}
+
+.pixel-btn:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.5);
+}
+
+.pixel-btn:disabled {
+  background-color: var(--btn-disabled);
+  border-color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: translate(4px, 4px);
+}
+
+.pixel-input {
+  font-family: 'DotGothic16', sans-serif;
+  background-color: #fff;
+  color: #000;
+  border: 4px solid var(--border-color);
+  padding: 10px;
+  font-size: 1.2rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.pixel-input:focus {
+  outline: none;
+  border-color: var(--text-accent);
+}
+
+h1,
+h2,
+h3 {
+  text-transform: uppercase;
+  color: var(--text-accent);
+  text-shadow: 2px 2px 0px #000;
+  text-align: center;
+  margin-top: 0;
+}
+
+.boss-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #000;
+  border: 4px solid #fff;
+  padding: 10px;
+}
+
+.boss-img {
+  width: 150px;
+  height: 150px;
+  image-rendering: pixelated;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: var(--text-accent);
+  background: #000;
+  padding: 10px;
+  border: 2px solid var(--border-color);
+}
+
+.feedback {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--danger);
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 0px #000;
+  animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.loader {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--text-accent);
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.review-list {
+  text-align: left;
+  margin-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 4px solid var(--border-color);
+  padding: 10px;
+  background: #000;
+}
+
+.review-item {
+  border-bottom: 2px dashed var(--border-color);
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.review-q {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.correct-text {
+  color: var(--btn-bg);
+  font-weight: bold;
+}
+
+.wrong-text {
+  color: var(--danger);
+  font-weight: bold;
+}
+
+.review-ans {
+  margin: 4px 0;
+  font-size: 1rem;
+}
