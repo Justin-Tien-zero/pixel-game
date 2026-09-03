@@ -23,7 +23,7 @@ interface ReviewRecord {
     q: string;
     myAnswer: string;
     correctAnswer: string;
-    correctAnswerText?: string; // 加入這行
+    correctAnswerText: string; // 加入這行
     isCorrect: boolean;
 }
 
