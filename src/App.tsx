@@ -23,6 +23,7 @@ interface ReviewRecord {
     q: string;
     myAnswer: string;
     correctAnswer: string;
+    correctAnswerText?: string; // 加入這行
     isCorrect: boolean;
 }
 
@@ -263,7 +264,7 @@ export default function App() {
                                         </div>
                                         {!item.isCorrect && (
                                             <div className="review-ans">
-                                                正確答案：<span className="correct-text">{item.correctAnswer}</span>
+                                                正確答案：<span className="correct-text">{item.correctAnswer}{item.correctAnswerText ? `(${item.correctAnswerText})` : ''}</span>
                                             </div>
                                         )}
                                     </div>

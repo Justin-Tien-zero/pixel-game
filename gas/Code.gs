@@ -31,97 +31,66 @@ function doPost(e) {
     const { userId, threshold } = params;
     const answers = params.answers || [];
     
-    // params = { userId: "user123", threshold: 3, answers: [{id: 1, myAnswer: "A"}, ...] }
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const qSheet = ss.getSheetByName(QUESTIONS_SHEET);
     const qData = qSheet.getDataRange().getValues();
     
-    // Map id to answer
+    // 把選項內容也存進 Map，方便後續抓取
     const answerMap = {};
     for (let i = 1; i < qData.length; i++) {
-        answerMap[String(qData[i][0])] = String(qData[i][6]); // id -> 解答
+        answerMap[String(qData[i][0])] = {
+            ans: String(qData[i][6]), // 解答 (A/B/C/D)
+            A: String(qData[i][2]),
+            B: String(qData[i][3]),
+            C: String(qData[i][4]),
+            D: String(qData[i][5])
+        };
     }
     
     let calculatedScore = 0;
-    const reviewData = []; // Store detailed review info
-
+    const reviewData = []; 
     answers.forEach(ans => {
-        const correctAns = answerMap[String(ans.id)];
+        const qInfo = answerMap[String(ans.id)] || { ans: '', A:'', B:'', C:'', D:'' };
+        const correctAns = qInfo.ans;
+        const correctAnsText = qInfo[correctAns] || ""; // 抓取正確答案的實際文字
         const isCorrect = correctAns === String(ans.myAnswer);
         
         if (isCorrect) {
             calculatedScore++;
         }
         
-        // Find question text
+        // 找題目名稱
         const qRow = qData.find(row => String(row[0]) === String(ans.id));
         const qText = qRow ? qRow[1] : "未知題目";
-
         reviewData.push({
             id: ans.id,
             q: qText,
             myAnswer: ans.myAnswer,
             correctAnswer: correctAns,
+            correctAnswerText: correctAnsText, // 新增這行傳給前端
             isCorrect: isCorrect
         });
     });
     
     const isPassed = calculatedScore >= threshold;
-    
     const aSheet = ss.getSheetByName(ANSWERS_SHEET);
-    const aData = aSheet.getDataRange().getValues();
-    
-    let userRowIdx = -1;
-    for (let i = 1; i < aData.length; i++) {
-        if (String(aData[i][0]) === String(userId)) {
-            userRowIdx = i + 1;
-            break;
-        }
-    }
-    
     const now = new Date();
     
-    if (userRowIdx > -1) {
-        // Update existing ID
-        // row schema: ID, 闖關次數, 總分, 最高分, 第一次通關分數, 花了幾次通關, 最近遊玩時間
-        const currentDataRow = aData[userRowIdx - 1];
-        const playCount = (parseInt(currentDataRow[1]) || 0) + 1;
-        const totalScore = (parseInt(currentDataRow[2]) || 0) + calculatedScore;
-        const highestScore = Math.max((parseInt(currentDataRow[3]) || 0), calculatedScore);
-        
-        let firstClearScore = currentDataRow[4];
-        let attemptsToClear = currentDataRow[5];
-        
-        if (isPassed && (!firstClearScore || firstClearScore === "")) {
-            firstClearScore = calculatedScore;
-            attemptsToClear = playCount;
-        }
-        
-        aSheet.getRange(userRowIdx, 2, 1, 6).setValues([[
-            playCount, totalScore, highestScore, firstClearScore, attemptsToClear, now
-        ]]);
-        
-    } else {
-        // New ID
-        aSheet.appendRow([
-            userId, 
-            1, // play count
-            calculatedScore, // total score
-            calculatedScore, // highest score
-            isPassed ? calculatedScore : "", // first clear score
-            isPassed ? 1 : "", // attempts to clear
-            now // last played
-        ]);
-    }
+    // 【修改 1】：不管 ID 是否存在，一律當作新測驗新增一行 (Append)
+    // 建議去 Google Sheets 把「回答」工作表的標題改為：ID | 本次得分 | 是否通過 | 測驗時間
+    aSheet.appendRow([
+        userId, 
+        calculatedScore,
+        isPassed ? "通過" : "未通過",
+        now
+    ]);
     
-    // Important: for CORS when returning JSONP/JSON to browser
     return ContentService.createTextOutput(JSON.stringify({ 
         success: true, 
         score: calculatedScore, 
         passed: isPassed,
         reviewData: reviewData
     })).setMimeType(ContentService.MimeType.JSON);
-    
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
