@@ -260,11 +260,13 @@ export default function App() {
                                         <div className="review-q">Q{idx + 1}: {item.q}</div>
                                         <div className="review-ans">
                                             你的答案：<span className={item.isCorrect ? 'correct-text' : 'wrong-text'}>{item.myAnswer}</span>
-                                            {item.isCorrect ? ' ✔' : ' ✘'}
+                                            {/* 答對時，在打勾後面顯示選項內容 */}
+                                            {item.isCorrect ? ` ✔ ${item.correctAnswerText ? `(${item.correctAnswerText})` : ''}` : ' ✘'}
                                         </div>
                                         {!item.isCorrect && (
                                             <div className="review-ans">
-                                                正確答案：<span className="correct-text">{item.correctAnswer}{item.correctAnswerText ? `(${item.correctAnswerText})` : ''}</span>
+                                                {/* 答錯時，在下方顯示正確答案與內容 */}
+                                                正確答案：<span className="correct-text">{item.correctAnswer} {item.correctAnswerText ? `(${item.correctAnswerText})` : ''}</span>
                                             </div>
                                         )}
                                     </div>
